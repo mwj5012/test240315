@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<!-- dataSource 빈을 사용하는 sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/META-INF/sqlmap/config/sql-mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:/META-INF/sqlmap/mappers/department.xml" />
+	</bean>
+	<!-- Mapper Interface에 부여한 @Mapper를 스캔하기 위한 설정 -->	
+	<bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
+		<property name="basePackage" value="egovframework.sample.dept.service.impl" />
+		<!-- 데이터 처리 시 Mapper Interface를 이용하는 경우, 
+			   기본 지정된 sqlSession이 아닌 다른 sqlSession을 사용하려면
+			   sqlSessionFactoryBeanName 속성을 이용하여 값을 지정한다
+		-->
+		<!-- <property name="sqlSessionFactoryBeanName" value="otherSqlSession" /> -->
+	</bean>  
+	
+	
+	
+	<!-- otherDataSource 빈을 사용하는 sqlSession -->
+	<!--아래와 같이 정의하고, @Repository 클래스에서 setSqlSessionFactory() 메소드를 오버라이딩 한다 -->
+	<bean id="otherSqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="otherDataSource" />
+		<property name="configLocation" value="classpath:/META-INF/sqlmap/config/sql-mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:/META-INF/sqlmap/mappers/employee.xml" />
+	</bean>
+
+</beans>
